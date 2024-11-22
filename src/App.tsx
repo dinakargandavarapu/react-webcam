@@ -5,14 +5,19 @@ const App: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
   const [error, setError] = useState<string | null>(null);
+  const [videoDimensions, setVideoDimensions] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
+
+  // Fixed crop width (300px) and dynamic crop height (70% of video height)
+  const cropWidth = 300;
 
   useEffect(() => {
     const startCamera = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
-            facingMode: "user", // Use "environment" for rear camera
+            facingMode,
             width: { ideal: 1280 },
             height: { ideal: 720 },
           },
@@ -20,7 +25,10 @@ const App: React.FC = () => {
 
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
-          // videoRef.current.play();
+          videoRef.current.onloadedmetadata = () => {
+            const { videoWidth, videoHeight } = videoRef.current!;
+            setVideoDimensions({ width: videoWidth, height: videoHeight });
+          };
         }
       } catch (err) {
         setError("Unable to access the camera.");
@@ -31,11 +39,14 @@ const App: React.FC = () => {
     startCamera();
 
     return () => {
-      // Stop the video stream when component unmounts
       const stream = videoRef.current?.srcObject as MediaStream;
       stream?.getTracks().forEach((track) => track.stop());
     };
-  }, []);
+  }, [facingMode]);
+
+  const toggleCamera = () => {
+    setFacingMode((prev) => (prev === "user" ? "environment" : "user"));
+  };
 
   const captureImage = () => {
     if (!videoRef.current || !canvasRef.current) {
@@ -60,18 +71,17 @@ const App: React.FC = () => {
       return;
     }
 
-    const cropWidth = 300; // Desired width of the cropped image
-    const cropHeight = 150; // Desired height of the cropped image
+    const cropHeight = videoHeight * 0.7; // Dynamic height (70% of video height)
 
-    // Set canvas size for cropping
+    // Set canvas size to match crop area dimensions
     canvas.width = cropWidth;
     canvas.height = cropHeight;
 
-    // Calculate the center crop area
+    // Calculate the crop position (centered in the video)
     const cropX = (videoWidth - cropWidth) / 2;
     const cropY = (videoHeight - cropHeight) / 2;
 
-    // Draw the cropped area onto the canvas
+    // Draw the cropped area from the video onto the canvas
     context.drawImage(
       video,
       cropX,
@@ -95,23 +105,50 @@ const App: React.FC = () => {
         <p className="error">{error}</p>
       ) : (
         <>
-          {!capturedImage && (<><div className="camera-container">
-            <video ref={videoRef} className="video" playsInline autoPlay></video>
-            <div className="overlay">
-              <div className="crop-box">
-                <p>Position ID Here</p>
+          {!capturedImage && (
+            <div className="camera-container">
+              <video
+                ref={videoRef}
+                className="video"
+                playsInline
+                autoPlay
+                style={{
+                  transform: facingMode === "user" ? "scaleX(-1)" : "none", // Mirror for front camera
+                }}
+              ></video>
+              <div className="overlay">
+                <div className="crop-box">
+                  <p>Position ID Here</p>
+                </div>
               </div>
             </div>
+          )}
+          <div className="controls">
+            {!capturedImage && (
+              <button onClick={captureImage} className="capture-button">
+                Capture
+              </button>
+            )}
+            {!capturedImage && (
+              <button onClick={toggleCamera} className="toggle-button">
+                {facingMode === "user" ? "Switch to Rear Camera" : "Switch to Front Camera"}
+              </button>
+            )}
           </div>
-          <button onClick={captureImage} className="capture-button">
-            Capture
-          </button></>)}
         </>
       )}
       {capturedImage && (
         <div className="result">
           <h2>Cropped Image:</h2>
           <img src={capturedImage} alt="Cropped ID" />
+          <button
+            onClick={() => {
+              setCapturedImage(null);
+            }}
+            className="retake-button"
+          >
+            Retake Photo
+          </button>
         </div>
       )}
       <canvas ref={canvasRef} className="hidden"></canvas>
