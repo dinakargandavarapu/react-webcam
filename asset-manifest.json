@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/%7Brepo-name%7D/static/css/main.649bf782.css",
-    "main.js": "/%7Brepo-name%7D/static/js/main.f942a0be.js",
-    "static/js/453.0d80a84f.chunk.js": "/%7Brepo-name%7D/static/js/453.0d80a84f.chunk.js",
-    "index.html": "/%7Brepo-name%7D/index.html",
-    "main.649bf782.css.map": "/%7Brepo-name%7D/static/css/main.649bf782.css.map",
-    "main.f942a0be.js.map": "/%7Brepo-name%7D/static/js/main.f942a0be.js.map",
-    "453.0d80a84f.chunk.js.map": "/%7Brepo-name%7D/static/js/453.0d80a84f.chunk.js.map"
+    "main.css": "/react-webcam/static/css/main.649bf782.css",
+    "main.js": "/react-webcam/static/js/main.d3ad6545.js",
+    "static/js/453.0d80a84f.chunk.js": "/react-webcam/static/js/453.0d80a84f.chunk.js",
+    "index.html": "/react-webcam/index.html",
+    "main.649bf782.css.map": "/react-webcam/static/css/main.649bf782.css.map",
+    "main.d3ad6545.js.map": "/react-webcam/static/js/main.d3ad6545.js.map",
+    "453.0d80a84f.chunk.js.map": "/react-webcam/static/js/453.0d80a84f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.649bf782.css",
-    "static/js/main.f942a0be.js"
+    "static/js/main.d3ad6545.js"
   ]
 }
