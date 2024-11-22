@@ -71,27 +71,24 @@ const App: React.FC = () => {
       return;
     }
 
-    const cropHeight = videoHeight * 0.7; // Dynamic height (70% of video height)
+    // const cropHeight = videoHeight * 0.7; // Dynamic height (70% of video height)
 
     // Set canvas size to match crop area dimensions
-    canvas.width = cropWidth;
-    canvas.height = cropHeight;
+    canvas.width = videoWidth;
+    canvas.height = videoHeight;
 
     // Calculate the crop position (centered in the video)
-    const cropX = (videoWidth - cropWidth) / 2;
-    const cropY = (videoHeight - cropHeight) / 2;
+    // const cropX = (videoWidth - cropWidth) / 2;
+    // const cropY = (videoHeight - cropHeight) / 2;
 
     // Draw the cropped area from the video onto the canvas
     context.drawImage(
       video,
-      cropX,
-      cropY,
-      cropWidth,
-      cropHeight,
       0,
       0,
-      cropWidth,
-      cropHeight
+      videoWidth,
+      videoHeight,
+    
     );
 
     // Convert the canvas content to a base64 image

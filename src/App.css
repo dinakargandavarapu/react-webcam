@@ -72,3 +72,9 @@
 .hidden {
   display: none;
 }
+
+.result{
+  img{
+    width: 100%;
+  }
+}
